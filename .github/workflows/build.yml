@@ -1,0 +1,38 @@
+name: Build & publish
+
+# Builds src/ and api/ into public/ (the directory Vercel actually serves,
+# see vercel.json) and opens a PR with the result when it drifts from what's
+# committed, so nobody has to remember to run `npm run build` and push the
+# compiled output by hand — but a human still reviews and merges it.
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Open a PR if public/ changed
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: rebuild public/"
+          title: "chore: rebuild public/"
+          body: Automated rebuild of `public/` from the latest `src/`/`api/` on `master`.
+          branch: chore/autobuild-public
+          add-paths: public
+          delete-branch: true

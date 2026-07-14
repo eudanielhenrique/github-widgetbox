@@ -109,7 +109,7 @@ nautilus             |  serika
 * [x] Add themes (dark mode)
 * [x] Add Skills: Tools & Frameworks widget
 * [x] Add Skills: Software & IDEs widget
-* [ ] Make autobuilder instead of manual build and push
+* [x] Make autobuilder instead of manual build and push
 * [ ] Count organization repositories (+ their stars)
 * [ ] Truncate name if too long on profile widget
 * [ ] Make all widgets a modular size
