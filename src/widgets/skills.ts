@@ -203,7 +203,7 @@ export default function skillsWidget(
                 <tspan x="0" y="0">Tools</tspan>
             </text>
             <text style="display:${softwareList.length <=  1 && softwareList[0] === 'undefined' ? "none" : "block"}" id="software" transform="translate(0 ${softwareTitleHeight})" fill="${theme.subtitle}" font-size="24" font-family="Roboto-Regular, Roboto, sans-serif">
-                <tspan x="0" y="0">Software</tspan>
+                <tspan x="0" y="0">OS &amp; IDE's</tspan>
             </text>
         </g>
         <g style="display:${languageList.length <=  1 && languageList[0] === 'undefined' ? "none" : "block"}" id="boxes" transform="translate(60 190)">

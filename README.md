@@ -53,7 +53,7 @@ Default             |  &includeNames=true
 ```
 
 
-#### Software & IDE's
+#### OS & IDE's
 
 Default             |  &includeNames=true
 :-------------------------:|:-------------------------:
@@ -108,7 +108,7 @@ nautilus             |  serika
 * [x] Fix skills text being off-center
 * [x] Add themes (dark mode)
 * [x] Add Skills: Tools & Frameworks widget
-* [x] Add Skills: Software & IDEs widget
+* [x] Add Skills: OS & IDEs widget
 * [ ] Make autobuilder instead of manual build and push
 * [ ] Count organization repositories (+ their stars)
 * [ ] Truncate name if too long on profile widget
