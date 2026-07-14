@@ -26,7 +26,7 @@ const ai: IconData[] = [
         xOffset: 0,
     },
     {
-        name: ['GoogleGemini', 'Gemini'],
+        name: ['Gemini', 'GoogleGemini'],
         colorFrom: '#DBD1EC',
         colorTo: '#8E75B2',
         icon: `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24">
@@ -38,7 +38,7 @@ const ai: IconData[] = [
         xOffset: 0,
     },
     {
-        name: ['GitHubCopilot', 'Copilot'],
+        name: ['Copilot', 'GitHubCopilot'],
         colorFrom: '#B3B3B3',
         colorTo: '#000000',
         icon: `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24">
@@ -62,7 +62,7 @@ const ai: IconData[] = [
         xOffset: 0,
     },
     {
-        name: ['MistralAI', 'Mistral'],
+        name: ['Mistral', 'MistralAI'],
         colorFrom: '#FDC79E',
         colorTo: '#FA520F',
         icon: `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24">
