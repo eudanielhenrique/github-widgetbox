@@ -1,5 +1,6 @@
 import { ContributionsCollection, ContributedRepositories } from './Contributions'
 import { Repositories } from './Repositories'
+import { Organizations } from './Organizations'
 
 export default interface GithubUserRequest {
     data: GithubUserData
@@ -16,6 +17,7 @@ export interface GithubUser {
     repositoriesContributedTo: ContributedRepositories
     followers: Followers
     repositories: Repositories
+    organizations?: Organizations
 }
 
 export interface Followers {

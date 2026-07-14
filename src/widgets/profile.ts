@@ -1,7 +1,7 @@
 require('dotenv').config()
 
 import axios from 'axios'
-import { getTheme, requestInBase64 } from '../utils'
+import { getBoolean, getTheme, requestInBase64 } from '../utils'
 import errorWidget from './error'
 import buildCard from '../components/card'
 import GithubUserRequest from '../interfaces/GithubUser'
@@ -13,8 +13,11 @@ import themes from '../data/themes'
 export default async function profileWidget(
     username: string,
     data: string,
-    themeString?: string
+    themeString?: string,
+    includeOrgsString?: string
 ): Promise<string> {
+
+    const includeOrgs = getBoolean(includeOrgsString || '')
 
 
     // Set the theme
@@ -64,7 +67,8 @@ export default async function profileWidget(
 
         const profile: GithubUserRequest = await getGithubUserStats(
             process.env.GITHUB_TOKEN,
-            username
+            username,
+            includeOrgs
         )
 
         const stargazers: number[] = []
@@ -73,6 +77,22 @@ export default async function profileWidget(
                 stargazers[index] = repo.stargazers.totalCount
             }
         )
+
+        // Organization repositories and stars are opt-in via includeOrgs, since
+        // adding them changes the totals for anyone already embedding this badge.
+        // Only organizations/repositories the server's token can see are counted
+        // (private org repos are excluded), and results are capped at the first
+        // 25 organizations and first 100 repositories per organization.
+        let orgRepositoryCount = 0
+        let orgStars = 0
+        if (includeOrgs && profile.data.user.organizations) {
+            profile.data.user.organizations.nodes.forEach((org) => {
+                orgRepositoryCount += org.repositories.totalCount
+                org.repositories.nodes.forEach((repo: Repository) => {
+                    orgStars += repo.stargazers.totalCount
+                })
+            })
+        }
 
         for (let i = 0; i < dataOptions.length; i++) {
             switch (dataOptions[i].toLowerCase()) {
@@ -90,7 +110,7 @@ export default async function profileWidget(
                     addDataBox(
                         'repositories',
                         i,
-                        profile.data.user.repositories.totalCount,
+                        profile.data.user.repositories.totalCount + orgRepositoryCount,
                         '#FFCEE4',
                         '#FF0774',
                         'M7.106,3A2.106,2.106,0,0,0,5,5.106V17.74a.7.7,0,0,0,.207.5,2.026,2.026,0,0,0,1.9,1.608h.7v-1.4h-.7a.7.7,0,0,1,0-1.4H17.634a1.4,1.4,0,0,0,1.4-1.4V4.4a1.4,1.4,0,0,0-1.4-1.4Zm.7,2.106h.7a.7.7,0,0,1,.7.7v.7a.7.7,0,0,1-.7.7h-.7a.7.7,0,0,1-.7-.7v-.7A.7.7,0,0,1,7.808,5.106Zm0,3.51h.7a.7.7,0,0,1,.7.7v.7a.7.7,0,0,1-.7.7h-.7a.7.7,0,0,1-.7-.7v-.7A.7.7,0,0,1,7.808,8.615Zm0,3.51h.7a.7.7,0,0,1,.7.7v.7a.7.7,0,0,1-.7.7h-.7a.7.7,0,0,1-.7-.7v-.7A.7.7,0,0,1,7.808,12.125Zm1.4,6.317v3.51l2.106-1.4,2.106,1.4v-3.51Zm5.615,0v1.4h3.51a.7.7,0,0,0,0-1.4Z'
@@ -100,7 +120,7 @@ export default async function profileWidget(
                     addDataBox(
                         'stars',
                         i,
-                        stargazers.reduce((a, b) => a + b, 0),
+                        stargazers.reduce((a, b) => a + b, 0) + orgStars,
                         '#FFEFCD',
                         '#FFA100',
                         'M9.6.608,7.369,5.131l-4.992.728a1.094,1.094,0,0,0-.6,1.865l3.611,3.519L4.53,16.215a1.093,1.093,0,0,0,1.585,1.151l4.465-2.347,4.465,2.347a1.094,1.094,0,0,0,1.585-1.151l-.854-4.971,3.611-3.519a1.094,1.094,0,0,0-.6-1.865l-4.992-.728L11.561.608A1.094,1.094,0,0,0,9.6.608Z'

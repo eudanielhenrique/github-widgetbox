@@ -10,47 +10,63 @@ const error_1 = __importDefault(require("./error"));
 const card_1 = __importDefault(require("../components/card"));
 const user_stats_fetcher_1 = __importDefault(require("../fetchers/user-stats-fetcher"));
 const themes_1 = __importDefault(require("../data/themes"));
-async function profileWidget(username, data, themeString) {
+async function profileWidget(username, data, themeString, includeOrgsString) {
+    const includeOrgs = (0, utils_1.getBoolean)(includeOrgsString || '');
     // Set the theme
-    let theme = utils_1.getTheme(themes_1.default, 'default');
+    let theme = (0, utils_1.getTheme)(themes_1.default, 'default');
     if (themeString) {
-        theme = utils_1.getTheme(themes_1.default, themeString);
+        theme = (0, utils_1.getTheme)(themes_1.default, themeString);
     }
     if (!theme) {
-        theme = utils_1.getTheme(themes_1.default, 'default');
+        theme = (0, utils_1.getTheme)(themes_1.default, 'default');
     }
     const dataOptions = data.split(',');
     // Return error if dataOptions argument is undefined
     if (dataOptions === undefined) {
         return new Promise((res) => {
-            res(error_1.default('Profile', '-25%', 'Data option is missing!', '-25%'));
+            res((0, error_1.default)('Profile', '-25%', 'Data option is missing!', '-25%'));
         });
     }
     // Return error if more than 4 dataOptions were supplied
     if (dataOptions.length > 4) {
         return new Promise((res) => {
-            res(error_1.default('Profile', '-25%', `Can't have more than 4 data-options!`, '-40%'));
+            res((0, error_1.default)('Profile', '-25%', `Can't have more than 4 data-options!`, '-40%'));
         });
     }
     const width = 842;
     const height = 165;
     async function getDataOptions() {
         let dataBoxes = '';
-        const profile = await user_stats_fetcher_1.default(process.env.GITHUB_TOKEN, username);
+        const profile = await (0, user_stats_fetcher_1.default)(process.env.GITHUB_TOKEN, username, includeOrgs);
         const stargazers = [];
         profile.data.user.repositories.nodes.forEach((repo, index) => {
             stargazers[index] = repo.stargazers.totalCount;
         });
+        // Organization repositories and stars are opt-in via includeOrgs, since
+        // adding them changes the totals for anyone already embedding this badge.
+        // Only organizations/repositories the server's token can see are counted
+        // (private org repos are excluded), and results are capped at the first
+        // 25 organizations and first 100 repositories per organization.
+        let orgRepositoryCount = 0;
+        let orgStars = 0;
+        if (includeOrgs && profile.data.user.organizations) {
+            profile.data.user.organizations.nodes.forEach((org) => {
+                orgRepositoryCount += org.repositories.totalCount;
+                org.repositories.nodes.forEach((repo) => {
+                    orgStars += repo.stargazers.totalCount;
+                });
+            });
+        }
         for (let i = 0; i < dataOptions.length; i++) {
             switch (dataOptions[i].toLowerCase()) {
                 case 'followers':
                     addDataBox('followers', i, profile.data.user.followers.totalCount, '#CAF0FF', '#00C6FF', 'M3.625,9.5A2.417,2.417,0,1,0,1.208,7.084,2.419,2.419,0,0,0,3.625,9.5Zm16.919,0a2.417,2.417,0,1,0-2.417-2.417A2.419,2.419,0,0,0,20.544,9.5Zm1.208,1.208H19.336a2.41,2.41,0,0,0-1.7.7,5.524,5.524,0,0,1,2.836,4.132h2.493a1.207,1.207,0,0,0,1.208-1.208V13.126A2.419,2.419,0,0,0,21.753,10.709Zm-9.668,0a4.23,4.23,0,1,0-4.23-4.23A4.228,4.228,0,0,0,12.085,10.709Zm2.9,1.208h-.313a5.84,5.84,0,0,1-5.174,0H9.185a4.352,4.352,0,0,0-4.351,4.351v1.088a1.813,1.813,0,0,0,1.813,1.813H17.523a1.813,1.813,0,0,0,1.813-1.813V16.269A4.352,4.352,0,0,0,14.985,11.918Zm-8.448-.506a2.41,2.41,0,0,0-1.7-.7H2.417A2.419,2.419,0,0,0,0,13.126v1.208a1.207,1.207,0,0,0,1.208,1.208H3.7A5.538,5.538,0,0,1,6.537,11.412Z');
                     break;
                 case 'repositories':
-                    addDataBox('repositories', i, profile.data.user.repositories.totalCount, '#FFCEE4', '#FF0774', 'M7.106,3A2.106,2.106,0,0,0,5,5.106V17.74a.7.7,0,0,0,.207.5,2.026,2.026,0,0,0,1.9,1.608h.7v-1.4h-.7a.7.7,0,0,1,0-1.4H17.634a1.4,1.4,0,0,0,1.4-1.4V4.4a1.4,1.4,0,0,0-1.4-1.4Zm.7,2.106h.7a.7.7,0,0,1,.7.7v.7a.7.7,0,0,1-.7.7h-.7a.7.7,0,0,1-.7-.7v-.7A.7.7,0,0,1,7.808,5.106Zm0,3.51h.7a.7.7,0,0,1,.7.7v.7a.7.7,0,0,1-.7.7h-.7a.7.7,0,0,1-.7-.7v-.7A.7.7,0,0,1,7.808,8.615Zm0,3.51h.7a.7.7,0,0,1,.7.7v.7a.7.7,0,0,1-.7.7h-.7a.7.7,0,0,1-.7-.7v-.7A.7.7,0,0,1,7.808,12.125Zm1.4,6.317v3.51l2.106-1.4,2.106,1.4v-3.51Zm5.615,0v1.4h3.51a.7.7,0,0,0,0-1.4Z');
+                    addDataBox('repositories', i, profile.data.user.repositories.totalCount + orgRepositoryCount, '#FFCEE4', '#FF0774', 'M7.106,3A2.106,2.106,0,0,0,5,5.106V17.74a.7.7,0,0,0,.207.5,2.026,2.026,0,0,0,1.9,1.608h.7v-1.4h-.7a.7.7,0,0,1,0-1.4H17.634a1.4,1.4,0,0,0,1.4-1.4V4.4a1.4,1.4,0,0,0-1.4-1.4Zm.7,2.106h.7a.7.7,0,0,1,.7.7v.7a.7.7,0,0,1-.7.7h-.7a.7.7,0,0,1-.7-.7v-.7A.7.7,0,0,1,7.808,5.106Zm0,3.51h.7a.7.7,0,0,1,.7.7v.7a.7.7,0,0,1-.7.7h-.7a.7.7,0,0,1-.7-.7v-.7A.7.7,0,0,1,7.808,8.615Zm0,3.51h.7a.7.7,0,0,1,.7.7v.7a.7.7,0,0,1-.7.7h-.7a.7.7,0,0,1-.7-.7v-.7A.7.7,0,0,1,7.808,12.125Zm1.4,6.317v3.51l2.106-1.4,2.106,1.4v-3.51Zm5.615,0v1.4h3.51a.7.7,0,0,0,0-1.4Z');
                     break;
                 case 'stars':
-                    addDataBox('stars', i, stargazers.reduce((a, b) => a + b, 0), '#FFEFCD', '#FFA100', 'M9.6.608,7.369,5.131l-4.992.728a1.094,1.094,0,0,0-.6,1.865l3.611,3.519L4.53,16.215a1.093,1.093,0,0,0,1.585,1.151l4.465-2.347,4.465,2.347a1.094,1.094,0,0,0,1.585-1.151l-.854-4.971,3.611-3.519a1.094,1.094,0,0,0-.6-1.865l-4.992-.728L11.561.608A1.094,1.094,0,0,0,9.6.608Z');
+                    addDataBox('stars', i, stargazers.reduce((a, b) => a + b, 0) + orgStars, '#FFEFCD', '#FFA100', 'M9.6.608,7.369,5.131l-4.992.728a1.094,1.094,0,0,0-.6,1.865l3.611,3.519L4.53,16.215a1.093,1.093,0,0,0,1.585,1.151l4.465-2.347,4.465,2.347a1.094,1.094,0,0,0,1.585-1.151l-.854-4.971,3.611-3.519a1.094,1.094,0,0,0-.6-1.865l-4.992-.728L11.561.608A1.094,1.094,0,0,0,9.6.608Z');
                     break;
                 case 'contributions':
                 case 'commits':
@@ -63,7 +79,7 @@ async function profileWidget(username, data, themeString) {
                 // Incorrect data item found
                 default:
                     return new Promise((res) => {
-                        res(error_1.default('Profile', '-25%', `Invalid data item found!`, '-26%'));
+                        res((0, error_1.default)('Profile', '-25%', `Invalid data item found!`, '-26%'));
                     });
             }
         }
@@ -90,14 +106,14 @@ async function profileWidget(username, data, themeString) {
         // Create the request
         const response = await axios_1.default.get(`https://api.github.com/users/${username}`);
         // Grab the avatar
-        const avatar = await utils_1.requestInBase64(response.data.avatar_url);
+        const avatar = await (0, utils_1.requestInBase64)(response.data.avatar_url);
         return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
                                     <defs>
                                         <pattern id="pattern" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" viewBox="0 0 200 200">
                                             <image width="200" height="200" xlink:href="data:image/jpeg;base64,${avatar}"/>
                                         </pattern>
                                     </defs>
-                                    ${card_1.default(width, height, theme.background)}
+                                    ${(0, card_1.default)(width, height, theme.background)}
                                     <g id="profile-card">
                                         <rect id="profile-image" width="65" height="65" rx="30" transform="translate(52 47)" fill="url(#pattern)"/>
                                         <text id="text-name" fill="${theme.title}" data-name="text-name" transform="translate(145 78)" font-size="26" font-family="Roboto-Medium, Roboto, sans-serif" font-weight="500"><tspan x="0" y="0">${response.data.name === null
@@ -112,7 +128,7 @@ async function profileWidget(username, data, themeString) {
     }
     catch (error) {
         return new Promise((res) => {
-            res(error_1.default('Profile', '-25%', 'GitHub API-call error!', '-24%'));
+            res((0, error_1.default)('Profile', '-25%', 'GitHub API-call error!', '-24%'));
         });
     }
 }

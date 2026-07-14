@@ -3,7 +3,8 @@ import GithubUserRequest from '../interfaces/GithubUser'
 
 export default async function getGithubUserStats(
     token: string | undefined,
-    username: string
+    username: string,
+    includeOrgs = false
 ): Promise<GithubUserRequest> {
 
     const headers = {
@@ -12,8 +13,8 @@ export default async function getGithubUserStats(
 
     const body = {
         query: `
-        query {
-            user(login: "${username}") {
+        query($login: String!, $includeOrgs: Boolean!) {
+            user(login: $login) {
               name
               login
               contributionsCollection {
@@ -37,9 +38,26 @@ export default async function getGithubUserStats(
                   }
                 }
               }
+              organizations(first: 25) @include(if: $includeOrgs) {
+                nodes {
+                  login
+                  repositories(first: 100, privacy: PUBLIC, orderBy: {direction: DESC, field: STARGAZERS}) {
+                    totalCount
+                    nodes {
+                      stargazers {
+                        totalCount
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
           `,
+        variables: {
+            login: username,
+            includeOrgs: includeOrgs,
+        },
     }
 
     const response = await fetch('https://api.github.com/graphql', {

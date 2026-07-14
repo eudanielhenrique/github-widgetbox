@@ -75,6 +75,14 @@ Show off your profile with some interesting statistics. Perfect for profile READ
 ```md
 [![GitHub WidgetBox](https://github-widgetbox.vercel.app/api/profile?username=Jurredr&data=followers,repositories,stars,commits)](https://github.com/Jurredr/github-widgetbox)
 ```
+
+By default, `repositories` and `stars` only count repos owned directly by your personal account. Add `&includeOrgs=true` to also count public repositories (and their stars) from organizations you're a member of:
+
+```md
+[![GitHub WidgetBox](https://github-widgetbox.vercel.app/api/profile?username=Jurredr&data=followers,repositories,stars,commits&includeOrgs=true)](https://github.com/Jurredr/github-widgetbox)
+```
+
+This is opt-in so existing embeds keep their current numbers. It only sees organizations and repositories that are publicly visible, capped at the first 25 organizations and first 100 repositories per organization.
 <br/><br/>
 ### Themes
 
@@ -110,7 +118,7 @@ nautilus             |  serika
 * [x] Add Skills: Tools & Frameworks widget
 * [x] Add Skills: Software & IDEs widget
 * [ ] Make autobuilder instead of manual build and push
-* [ ] Count organization repositories (+ their stars)
+* [x] Count organization repositories (+ their stars)
 * [ ] Truncate name if too long on profile widget
 * [ ] Make all widgets a modular size
 * [ ] Add Profile Tag widget
