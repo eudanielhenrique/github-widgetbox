@@ -99,7 +99,7 @@ const softwareIDEs: IconData[] = [
         xOffset: 0,
     },
     {
-        name: ['macOS', 'MacOS', 'OSX'],
+        name: ['macOS', 'OSX'],
         colorFrom: '#E8E8ED',
         colorTo: '#6E6E73',
         icon: `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24">
