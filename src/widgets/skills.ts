@@ -6,20 +6,22 @@ import frameworks from '../data/frameworks'
 import libraries from '../data/libraries'
 import tools from '../data/tools'
 import softwareIDEs from '../data/software-ides'
+import ai from '../data/ai'
 import { Theme } from "../interfaces/Theme";
 import themes from '../data/themes'
 /**
  * Builds the skill widget page
- * 
+ *
  * This method builds a SVG file that contains all the languages, frameworks,
- * libraries, tools and other software that can be found in the data folder and
- * are passed by the calling method.
- * 
+ * libraries, tools, software and AI/LLM tools that can be found in the data
+ * folder and are passed by the calling method.
+ *
  * @param languagesString The string with all the languages
  * @param frameworksString The string with all the frameworks
  * @param librariesString The string with all the libraries
  * @param toolsString The string with all the tools
  * @param softwareString The string with all the software
+ * @param aiString The string with all the AI/LLM tools
  * @param includeNames The boolean that determines whether or not to include names
  * @returns The SVG with all the skills that were passed.
  */
@@ -29,6 +31,7 @@ export default function skillsWidget(
     librariesString?: string,
     toolsString?: string,
     softwareString?: string,
+    aiString?: string,
     includeNames?: boolean,
     themeString?: string
 
@@ -55,6 +58,9 @@ export default function skillsWidget(
     if (!softwareString) {
         softwareString = 'undefined'
     }
+    if (!aiString) {
+        aiString = 'undefined'
+    }
 
     // Set the theme
     let theme : Theme = getTheme(themes, 'default')
@@ -70,6 +76,7 @@ export default function skillsWidget(
     const libraryList: string[] = librariesString.split(',')
     const toolsList: string[] = toolsString.split(',')
     const softwareList: string[] = softwareString.split(',')
+    const aiList: string[] = aiString.split(',')
 
     const rowHeightLanguages = Math.round((languageList.length - 0.1) / 7) > 1 ? Math.round((languageList.length - 0.1) / 7) : 1
     const languagesTitleHeight = FIRST_ROW 
@@ -94,30 +101,38 @@ export default function skillsWidget(
 
     const rowHeightSoftware = Math.round((softwareList.length - 0.1) / 7) > 1 ? Math.round((softwareList.length - 0.1) / 7) : 1
     const softwareTitleHeight = toolsTitleHeight
-    + ((toolsList.length > 1 || toolsList[0] !== 'undefined' ? 1  : 0) * PAD) 
+    + ((toolsList.length > 1 || toolsList[0] !== 'undefined' ? 1  : 0) * PAD)
     + ((toolsList.length > 1 || toolsList[0] !== 'undefined' ? rowHeightTools : 0) * ROW)
     +  (includeNames  && (toolsList.length > 1 || toolsList[0] !== 'undefined') ? (rowHeightSoftware) * 25 : 0)
+
+    const rowHeightAI = Math.round((aiList.length - 0.1) / 7) > 1 ? Math.round((aiList.length - 0.1) / 7) : 1
+    const aiTitleHeight = softwareTitleHeight
+    + ((softwareList.length > 1 || softwareList[0] !== 'undefined' ? 1  : 0) * PAD)
+    + ((softwareList.length > 1 || softwareList[0] !== 'undefined' ? rowHeightSoftware : 0) * ROW)
+    +  (includeNames  && (softwareList.length > 1 || softwareList[0] !== 'undefined') ? (rowHeightAI) * 25 : 0)
 
     // Set the size of the main SVG container
     const width = BASE_WIDTH
     const height =
         BASE_HEIGHT +
         (ROW * (
-            (languageList.length > 1 || languageList[0] !== 'undefined' ? rowHeightLanguages : 0) + 
-            (frameworkList.length > 1 || frameworkList[0] !== 'undefined' ? rowHeightFrameworks : 0) + 
+            (languageList.length > 1 || languageList[0] !== 'undefined' ? rowHeightLanguages : 0) +
+            (frameworkList.length > 1 || frameworkList[0] !== 'undefined' ? rowHeightFrameworks : 0) +
             (libraryList.length > 1 || libraryList[0] !== 'undefined' ? rowHeightLibraries : 0) +
             (toolsList.length > 1 || toolsList[0] !== 'undefined' ? rowHeightTools : 0) +
-            (softwareList.length > 1 || softwareList[0] !== 'undefined' ? rowHeightSoftware : 0)
+            (softwareList.length > 1 || softwareList[0] !== 'undefined' ? rowHeightSoftware : 0) +
+            (aiList.length > 1 || aiList[0] !== 'undefined' ? rowHeightAI : 0)
             ))
         + (PAD * ( 1 +
-            (languageList.length > 1 || languageList[0] !== 'undefined' ? 1 : 0) + 
-            (frameworkList.length > 1 || frameworkList[0] !== 'undefined' ? 1 : 0) + 
+            (languageList.length > 1 || languageList[0] !== 'undefined' ? 1 : 0) +
+            (frameworkList.length > 1 || frameworkList[0] !== 'undefined' ? 1 : 0) +
             (libraryList.length > 1 || libraryList[0] !== 'undefined' ? 1 : 0) +
             (toolsList.length > 1 || toolsList[0] !== 'undefined' ? 1 : 0) +
-            (softwareList.length > 1 || softwareList[0] !== 'undefined' ? 1 : 0)
+            (softwareList.length > 1 || softwareList[0] !== 'undefined' ? 1 : 0) +
+            (aiList.length > 1 || aiList[0] !== 'undefined' ? 1 : 0)
             ))
         // Add space for the names if true.
-        + (includeNames ? (Math.round(((languageList.length + libraryList.length + frameworkList.length + toolsList.length+ softwareList.length) - 0.1) / 7) + 1) * 25 : 0)
+        + (includeNames ? (Math.round(((languageList.length + libraryList.length + frameworkList.length + toolsList.length+ softwareList.length + aiList.length) - 0.1) / 7) + 1) * 25 : 0)
 
         /**
          * Builds the gradient boxes and sets the names.
@@ -130,7 +145,7 @@ export default function skillsWidget(
         for (let i = 0; i < listToBuild.length; i++) {
             // Check the data and add the first result that isn't defined.
             // It checks the languages first, then the frameworks, and then the libraries.
-            let foundData = findData(languageData, listToBuild[i]) || findData(frameworks, listToBuild[i]) || findData(libraries, listToBuild[i]) || findData(tools, listToBuild[i]) || findData(softwareIDEs, listToBuild[i])
+            let foundData = findData(languageData, listToBuild[i]) || findData(frameworks, listToBuild[i]) || findData(libraries, listToBuild[i]) || findData(tools, listToBuild[i]) || findData(softwareIDEs, listToBuild[i]) || findData(ai, listToBuild[i])
             if (foundData === undefined) {
                 foundData = {
                     name: [''],
@@ -205,6 +220,9 @@ export default function skillsWidget(
             <text style="display:${softwareList.length <=  1 && softwareList[0] === 'undefined' ? "none" : "block"}" id="software" transform="translate(0 ${softwareTitleHeight})" fill="${theme.subtitle}" font-size="24" font-family="Roboto-Regular, Roboto, sans-serif">
                 <tspan x="0" y="0">Software</tspan>
             </text>
+            <text style="display:${aiList.length <=  1 && aiList[0] === 'undefined' ? "none" : "block"}" id="ai" transform="translate(0 ${aiTitleHeight})" fill="${theme.subtitle}" font-size="24" font-family="Roboto-Regular, Roboto, sans-serif">
+                <tspan x="0" y="0">AI</tspan>
+            </text>
         </g>
         <g style="display:${languageList.length <=  1 && languageList[0] === 'undefined' ? "none" : "block"}" id="boxes" transform="translate(60 190)">
             ${getBoxes(languageList, 1)}
@@ -221,7 +239,10 @@ export default function skillsWidget(
         <g style="display:${softwareList.length <=  1 && softwareList[0] === 'undefined' ? "none" : "block"}" id="boxes" transform="translate(60 ${softwareTitleHeight + 100})">
             ${getBoxes(softwareList, 5)}
         </g>
-        
+        <g style="display:${aiList.length <=  1 && aiList[0] === 'undefined' ? "none" : "block"}" id="boxes" transform="translate(60 ${aiTitleHeight + 100})">
+            ${getBoxes(aiList, 6)}
+        </g>
+
     </svg>
   `
 }

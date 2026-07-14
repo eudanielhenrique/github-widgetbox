@@ -9,7 +9,7 @@
 
 ### Skills
 
-A clear way to give an overview of programming languages, tools, and software that you're familiar with.
+A clear way to give an overview of programming languages, tools, software, and AI/LLM tools that you're familiar with.
 
 #### Languages
 
@@ -62,6 +62,18 @@ Default             |  &includeNames=true
 ```md
 [![GitHub WidgetBox](https://github-widgetbox.vercel.app/api/skills?software=linux,windows,vscode)](https://github.com/Jurredr/github-widgetbox)
 ```
+
+#### AI
+
+Default             |  &includeNames=true
+:-------------------------:|:-------------------------:
+[![GitHub WidgetBox](https://github-widgetbox.vercel.app/api/skills?ai=anthropic,claude,googlegemini,githubcopilot,perplexity)](https://github.com/Jurredr/github-widgetbox)  |  [![GitHub WidgetBox](https://github-widgetbox.vercel.app/api/skills?ai=anthropic,claude,googlegemini,githubcopilot,perplexity&includeNames=true)](https://github.com/Jurredr/github-widgetbox)
+
+```md
+[![GitHub WidgetBox](https://github-widgetbox.vercel.app/api/skills?ai=anthropic,claude,googlegemini,githubcopilot,perplexity)](https://github.com/Jurredr/github-widgetbox)
+```
+
+Full list: `anthropic`, `claude`, `googlegemini`, `githubcopilot`, `perplexity`, `mistralai`, `metaai`, `huggingface`, `langchain`, `ollama`, `cursor`, `deepseek`, `replicate`.
 
 <br/><br/>
 ### Profile

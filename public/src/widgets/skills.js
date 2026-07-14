@@ -11,23 +11,25 @@ const frameworks_1 = __importDefault(require("../data/frameworks"));
 const libraries_1 = __importDefault(require("../data/libraries"));
 const tools_1 = __importDefault(require("../data/tools"));
 const software_ides_1 = __importDefault(require("../data/software-ides"));
+const ai_1 = __importDefault(require("../data/ai"));
 const themes_1 = __importDefault(require("../data/themes"));
 /**
  * Builds the skill widget page
  *
  * This method builds a SVG file that contains all the languages, frameworks,
- * libraries, tools and other software that can be found in the data folder and
- * are passed by the calling method.
+ * libraries, tools, software and AI/LLM tools that can be found in the data
+ * folder and are passed by the calling method.
  *
  * @param languagesString The string with all the languages
  * @param frameworksString The string with all the frameworks
  * @param librariesString The string with all the libraries
  * @param toolsString The string with all the tools
  * @param softwareString The string with all the software
+ * @param aiString The string with all the AI/LLM tools
  * @param includeNames The boolean that determines whether or not to include names
  * @returns The SVG with all the skills that were passed.
  */
-function skillsWidget(languagesString, frameworksString, librariesString, toolsString, softwareString, includeNames, themeString) {
+function skillsWidget(languagesString, frameworksString, librariesString, toolsString, softwareString, aiString, includeNames, themeString) {
     const BASE_HEIGHT = 125;
     const BASE_WIDTH = 812;
     const FIRST_ROW = 90;
@@ -48,19 +50,23 @@ function skillsWidget(languagesString, frameworksString, librariesString, toolsS
     if (!softwareString) {
         softwareString = 'undefined';
     }
+    if (!aiString) {
+        aiString = 'undefined';
+    }
     // Set the theme
-    let theme = utils_1.getTheme(themes_1.default, 'default');
+    let theme = (0, utils_1.getTheme)(themes_1.default, 'default');
     if (themeString) {
-        theme = utils_1.getTheme(themes_1.default, themeString);
+        theme = (0, utils_1.getTheme)(themes_1.default, themeString);
     }
     if (!theme) {
-        theme = utils_1.getTheme(themes_1.default, 'default');
+        theme = (0, utils_1.getTheme)(themes_1.default, 'default');
     }
     const languageList = languagesString.split(',');
     const frameworkList = frameworksString.split(',');
     const libraryList = librariesString.split(',');
     const toolsList = toolsString.split(',');
     const softwareList = softwareString.split(',');
+    const aiList = aiString.split(',');
     const rowHeightLanguages = Math.round((languageList.length - 0.1) / 7) > 1 ? Math.round((languageList.length - 0.1) / 7) : 1;
     const languagesTitleHeight = FIRST_ROW;
     const rowHeightFrameworks = Math.round((frameworkList.length - 0.1) / 7) > 1 ? Math.round((frameworkList.length - 0.1) / 7) : 1;
@@ -83,6 +89,11 @@ function skillsWidget(languagesString, frameworksString, librariesString, toolsS
         + ((toolsList.length > 1 || toolsList[0] !== 'undefined' ? 1 : 0) * PAD)
         + ((toolsList.length > 1 || toolsList[0] !== 'undefined' ? rowHeightTools : 0) * ROW)
         + (includeNames && (toolsList.length > 1 || toolsList[0] !== 'undefined') ? (rowHeightSoftware) * 25 : 0);
+    const rowHeightAI = Math.round((aiList.length - 0.1) / 7) > 1 ? Math.round((aiList.length - 0.1) / 7) : 1;
+    const aiTitleHeight = softwareTitleHeight
+        + ((softwareList.length > 1 || softwareList[0] !== 'undefined' ? 1 : 0) * PAD)
+        + ((softwareList.length > 1 || softwareList[0] !== 'undefined' ? rowHeightSoftware : 0) * ROW)
+        + (includeNames && (softwareList.length > 1 || softwareList[0] !== 'undefined') ? (rowHeightAI) * 25 : 0);
     // Set the size of the main SVG container
     const width = BASE_WIDTH;
     const height = BASE_HEIGHT +
@@ -90,15 +101,17 @@ function skillsWidget(languagesString, frameworksString, librariesString, toolsS
             (frameworkList.length > 1 || frameworkList[0] !== 'undefined' ? rowHeightFrameworks : 0) +
             (libraryList.length > 1 || libraryList[0] !== 'undefined' ? rowHeightLibraries : 0) +
             (toolsList.length > 1 || toolsList[0] !== 'undefined' ? rowHeightTools : 0) +
-            (softwareList.length > 1 || softwareList[0] !== 'undefined' ? rowHeightSoftware : 0)))
+            (softwareList.length > 1 || softwareList[0] !== 'undefined' ? rowHeightSoftware : 0) +
+            (aiList.length > 1 || aiList[0] !== 'undefined' ? rowHeightAI : 0)))
         + (PAD * (1 +
             (languageList.length > 1 || languageList[0] !== 'undefined' ? 1 : 0) +
             (frameworkList.length > 1 || frameworkList[0] !== 'undefined' ? 1 : 0) +
             (libraryList.length > 1 || libraryList[0] !== 'undefined' ? 1 : 0) +
             (toolsList.length > 1 || toolsList[0] !== 'undefined' ? 1 : 0) +
-            (softwareList.length > 1 || softwareList[0] !== 'undefined' ? 1 : 0)))
+            (softwareList.length > 1 || softwareList[0] !== 'undefined' ? 1 : 0) +
+            (aiList.length > 1 || aiList[0] !== 'undefined' ? 1 : 0)))
         // Add space for the names if true.
-        + (includeNames ? (Math.round(((languageList.length + libraryList.length + frameworkList.length + toolsList.length + softwareList.length) - 0.1) / 7) + 1) * 25 : 0);
+        + (includeNames ? (Math.round(((languageList.length + libraryList.length + frameworkList.length + toolsList.length + softwareList.length + aiList.length) - 0.1) / 7) + 1) * 25 : 0);
     /**
      * Builds the gradient boxes and sets the names.
      * @param listToBuild The list of items to build the boxes with
@@ -110,7 +123,7 @@ function skillsWidget(languagesString, frameworksString, librariesString, toolsS
         for (let i = 0; i < listToBuild.length; i++) {
             // Check the data and add the first result that isn't defined.
             // It checks the languages first, then the frameworks, and then the libraries.
-            let foundData = utils_1.findData(languages_1.default, listToBuild[i]) || utils_1.findData(frameworks_1.default, listToBuild[i]) || utils_1.findData(libraries_1.default, listToBuild[i]) || utils_1.findData(tools_1.default, listToBuild[i]) || utils_1.findData(software_ides_1.default, listToBuild[i]);
+            let foundData = (0, utils_1.findData)(languages_1.default, listToBuild[i]) || (0, utils_1.findData)(frameworks_1.default, listToBuild[i]) || (0, utils_1.findData)(libraries_1.default, listToBuild[i]) || (0, utils_1.findData)(tools_1.default, listToBuild[i]) || (0, utils_1.findData)(software_ides_1.default, listToBuild[i]) || (0, utils_1.findData)(ai_1.default, listToBuild[i]);
             if (foundData === undefined) {
                 foundData = {
                     name: [''],
@@ -125,7 +138,7 @@ function skillsWidget(languagesString, frameworksString, librariesString, toolsS
             const row = Math.floor(i / 7);
             const transX = 102 * (i - row * 7);
             const transY = ROW * row + (includeNames && row > 0 ? 25 * row : 0);
-            boxes += gradient_box_1.default(
+            boxes += (0, gradient_box_1.default)(
             // Combine the index and the type number.
             (i * Math.pow(10, Math.floor(Math.log10(type)) + 1) + type), foundData.colorFrom, foundData.colorTo, transX, transY);
             boxes +=
@@ -149,7 +162,7 @@ function skillsWidget(languagesString, frameworksString, librariesString, toolsS
     return `
     <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"
     xmlns="http://www.w3.org/2000/svg">
-        ${card_1.default(width, height, theme.background)}
+        ${(0, card_1.default)(width, height, theme.background)}
         <g id="header-text" transform="translate(60 60)">
             <text id="skills" fill="${theme.title}" transform="translate(0 44)" font-size="42" font-family="Roboto-Medium, Roboto, sans-serif" font-weight="500">
                 <tspan x="0" y="0">Skills</tspan>
@@ -169,6 +182,9 @@ function skillsWidget(languagesString, frameworksString, librariesString, toolsS
             <text style="display:${softwareList.length <= 1 && softwareList[0] === 'undefined' ? "none" : "block"}" id="software" transform="translate(0 ${softwareTitleHeight})" fill="${theme.subtitle}" font-size="24" font-family="Roboto-Regular, Roboto, sans-serif">
                 <tspan x="0" y="0">Software</tspan>
             </text>
+            <text style="display:${aiList.length <= 1 && aiList[0] === 'undefined' ? "none" : "block"}" id="ai" transform="translate(0 ${aiTitleHeight})" fill="${theme.subtitle}" font-size="24" font-family="Roboto-Regular, Roboto, sans-serif">
+                <tspan x="0" y="0">AI</tspan>
+            </text>
         </g>
         <g style="display:${languageList.length <= 1 && languageList[0] === 'undefined' ? "none" : "block"}" id="boxes" transform="translate(60 190)">
             ${getBoxes(languageList, 1)}
@@ -185,7 +201,10 @@ function skillsWidget(languagesString, frameworksString, librariesString, toolsS
         <g style="display:${softwareList.length <= 1 && softwareList[0] === 'undefined' ? "none" : "block"}" id="boxes" transform="translate(60 ${softwareTitleHeight + 100})">
             ${getBoxes(softwareList, 5)}
         </g>
-        
+        <g style="display:${aiList.length <= 1 && aiList[0] === 'undefined' ? "none" : "block"}" id="boxes" transform="translate(60 ${aiTitleHeight + 100})">
+            ${getBoxes(aiList, 6)}
+        </g>
+
     </svg>
   `;
 }

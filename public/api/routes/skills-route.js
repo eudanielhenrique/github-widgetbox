@@ -17,24 +17,25 @@ const error_1 = __importDefault(require("../../src/widgets/error"));
  * @param libraries the list of libraries to show.
  * @param tools the list of tools to show.
  * @param software the list of software to show
+ * @param ai the list of AI/LLM tools to show
  * @param includeNames the option if it has to include names.
  * @param theme the theme of the widget.
  * @param names @deprecated the full list of all skills it needs to show. deprecated from version 1.1.0 onwards.
  */
 router.get('/', function (req, res) {
-    const { names, languages, frameworks, libraries, tools, software, includeNames, theme } = req.query;
+    const { names, languages, frameworks, libraries, tools, software, ai, includeNames, theme } = req.query;
     // Set the header's type to svg/xml
     res.setHeader('Content-Type', 'image/svg+xml');
     // Check if languages argument is not present
-    if (!languages && !frameworks && !libraries && !names && !tools && !software) {
-        res.send(error_1.default('Skills', '-24%', 'Languages are undefined!', '-28%'));
+    if (!languages && !frameworks && !libraries && !names && !tools && !software && !ai) {
+        res.send((0, error_1.default)('Skills', '-24%', 'Languages are undefined!', '-28%'));
         return;
     }
     if (names) {
-        res.send(skills_1.default(String(names), undefined, undefined, undefined, undefined, utils_1.getBoolean(String(includeNames)), String(theme)));
+        res.send((0, skills_1.default)(String(names), undefined, undefined, undefined, undefined, undefined, (0, utils_1.getBoolean)(String(includeNames)), String(theme)));
     }
     else {
-        res.send(skills_1.default(String(languages), String(frameworks), String(libraries), String(tools), String(software), utils_1.getBoolean(String(includeNames)), String(theme)));
+        res.send((0, skills_1.default)(String(languages), String(frameworks), String(libraries), String(tools), String(software), String(ai), (0, utils_1.getBoolean)(String(includeNames)), String(theme)));
     }
     // Grab the Skills widget
 });
