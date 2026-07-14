@@ -59,6 +59,31 @@ export default async function profileWidget(
     const width = 842
     const height = 165
 
+    // Escapes characters that would otherwise break the SVG's XML structure.
+    function escapeXml(value: string): string {
+        return value
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+    }
+
+    // Truncates the display name so it never runs into the data boxes on the right,
+    // which shift further left the more data options are requested.
+    function truncateName(name: string): string {
+        const CHAR_WIDTH = 13
+        const NAME_START_X = 145
+        const NAME_RIGHT_MARGIN = 20
+        const dataBoxesWidth = dataOptions.length * 108
+        const availableWidth =
+            width - 52 - dataBoxesWidth - NAME_START_X - NAME_RIGHT_MARGIN
+        const maxChars = Math.max(1, Math.floor(availableWidth / CHAR_WIDTH))
+
+        if (name.length <= maxChars) {
+            return name
+        }
+        return name.slice(0, Math.max(1, maxChars - 1)) + '…'
+    }
+
     async function getDataOptions(): Promise<string> {
         let dataBoxes = ''
 
@@ -187,12 +212,16 @@ export default async function profileWidget(
                                     ${buildCard(width, height, theme.background)}
                                     <g id="profile-card">
                                         <rect id="profile-image" width="65" height="65" rx="30" transform="translate(52 47)" fill="url(#pattern)"/>
-                                        <text id="text-name" fill="${theme.title}" data-name="text-name" transform="translate(145 78)" font-size="26" font-family="Roboto-Medium, Roboto, sans-serif" font-weight="500"><tspan x="0" y="0">${response.data.name === null
-                ? response.data.login
-                : response.data.name
-            }</tspan></text>
-                                        <text id="text-url" data-name="text-url" transform="translate(145 102)" fill="#bfbfbf" font-size="16" font-family="Roboto-Regular, Roboto, sans-serif"><tspan x="0" y="0">GitHub.com/${response.data.login
-            }</tspan></text>
+                                        <text id="text-name" fill="${theme.title}" data-name="text-name" transform="translate(145 78)" font-size="26" font-family="Roboto-Medium, Roboto, sans-serif" font-weight="500"><tspan x="0" y="0">${escapeXml(
+                truncateName(
+                    response.data.name === null
+                        ? response.data.login
+                        : response.data.name
+                )
+            )}</tspan></text>
+                                        <text id="text-url" data-name="text-url" transform="translate(145 102)" fill="#bfbfbf" font-size="16" font-family="Roboto-Regular, Roboto, sans-serif"><tspan x="0" y="0">GitHub.com/${escapeXml(
+                response.data.login
+            )}</tspan></text>
                                         <g id="data-boxes" transform="translate(${width - 52
             } ${(height - 37) / 2})">
                                             ${dataBoxes}

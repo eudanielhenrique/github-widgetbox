@@ -111,7 +111,7 @@ nautilus             |  serika
 * [x] Add Skills: Software & IDEs widget
 * [ ] Make autobuilder instead of manual build and push
 * [ ] Count organization repositories (+ their stars)
-* [ ] Truncate name if too long on profile widget
+* [x] Truncate name if too long on profile widget
 * [ ] Make all widgets a modular size
 * [ ] Add Profile Tag widget
 * [ ] Add Skill Tag widget
