@@ -46,10 +46,10 @@ Default             |  &includeNames=true
 
 Default             |  &includeNames=true
 :-------------------------:|:-------------------------:
-[![GitHub WidgetBox](https://github-widgetbox.vercel.app/api/skills?tools=git,docker,npm,yarn,webpack,gulp,firebase,mongodb,wordpress,shopify,woocommerce,vercel,redis,nodejs,heroku,apache,nginx,aws,jupyter,gradle,prettier)](https://github.com/Jurredr/github-widgetbox)  |  [![GitHub WidgetBox](https://github-widgetbox.vercel.app/api/skills?tools=git,docker,npm,yarn,webpack,gulp,firebase,mongodb,wordpress,shopify,woocommerce,vercel,redis,nodejs,heroku,apache,nginx,aws,jupyter,gradle,prettier&includeNames=true)](https://github.com/Jurredr/github-widgetbox)
+[![GitHub WidgetBox](https://github-widgetbox.vercel.app/api/skills?tools=git,docker,npm,yarn,webpack,gulp,firebase,mongodb,wordpress,shopify,woocommerce,vercel,redis,nodejs,heroku,apache,nginx,aws,jupyter,gradle,prettier,homebrew,tmux,neovim,vim,httpie,zsh,fishshell,kubernetes,terraform,ansible,pnpm,bun,deno,curl,ffmpeg,nvm)](https://github.com/Jurredr/github-widgetbox)  |  [![GitHub WidgetBox](https://github-widgetbox.vercel.app/api/skills?tools=git,docker,npm,yarn,webpack,gulp,firebase,mongodb,wordpress,shopify,woocommerce,vercel,redis,nodejs,heroku,apache,nginx,aws,jupyter,gradle,prettier,homebrew,tmux,neovim,vim,httpie,zsh,fishshell,kubernetes,terraform,ansible,pnpm,bun,deno,curl,ffmpeg,nvm&includeNames=true)](https://github.com/Jurredr/github-widgetbox)
 
 ```md
-[![GitHub WidgetBox](https://github-widgetbox.vercel.app/api/skills?tools=git,docker,npm,yarn,webpack,gulp,firebase,mongodb,wordpress,shopify,woocommerce,vercel,redis,nodejs,heroku,apache,nginx,aws,jupyter,gradle,prettier)](https://github.com/Jurredr/github-widgetbox)
+[![GitHub WidgetBox](https://github-widgetbox.vercel.app/api/skills?tools=git,docker,npm,yarn,webpack,gulp,firebase,mongodb,wordpress,shopify,woocommerce,vercel,redis,nodejs,heroku,apache,nginx,aws,jupyter,gradle,prettier,homebrew,tmux,neovim,vim,httpie,zsh,fishshell,kubernetes,terraform,ansible,pnpm,bun,deno,curl,ffmpeg,nvm)](https://github.com/Jurredr/github-widgetbox)
 ```
 
 
