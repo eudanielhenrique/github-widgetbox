@@ -21,9 +21,9 @@ const themes = [
     },
     {
         name: ['transparent'],
-        title: '006AFF',
-        subtitle: '417E87',
-        background: 'ffffff00',
+        title: '#006AFF',
+        subtitle: '#417E87',
+        background: 'none',
     },
     {
         name: ['viridescent'],
@@ -978,6 +978,12 @@ const themes = [
         background: '#fdf0d5',
         title: '#892948',
         subtitle: '#bfbfbf',
+    },
+    {
+        name: ['synthwave'],
+        background: '#2c263c',
+        title: '#cf2ba2',
+        subtitle: '#f1914c',
     },
 ];
 exports.default = themes;

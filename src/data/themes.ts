@@ -21,9 +21,9 @@ const themes: Theme[] = [
     },
     {
         name: ['transparent'],
-        title: '006AFF',
-        subtitle: '417E87',
-        background: 'ffffff00',
+        title: '#006AFF',
+        subtitle: '#417E87',
+        background: 'none',
     },
     {
         name: ['viridescent'],

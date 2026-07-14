@@ -81,6 +81,8 @@ Show off your profile with some interesting statistics. Perfect for profile READ
 GitHub WidgetBox supports a great variety of different themes for all widgets, like the ones below. 
 You can check out more examples in [themes.md](https://github.com/Jurredr/github-widgetbox/blob/master/THEMES.md), or have a look at all themes in the [themes.ts](https://github.com/Jurredr/github-widgetbox/blob/9bd0e12a8a79b44b1e714f0c74aa3704091a0360/src/data/themes.ts) file. Feel free to create your own theme(s) and add them to that `themes.ts` file. Make sure to create a PR afterwards to share it with everyone else!
 
+Use `&theme=transparent` to drop the card background entirely, useful for embedding the widget on a page or README section that already has its own background color.
+
 
 `&theme=darkmode`
 
